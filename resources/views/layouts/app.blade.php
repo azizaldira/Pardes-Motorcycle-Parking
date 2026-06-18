@@ -29,8 +29,8 @@
                     </a>
                 </li>
 
-                <!-- Menu Staff & Admin -->
-                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
+                <!-- Menu Khusus Staff -->
+                @if(auth()->user()->role === 'staff')
                 <li class="sidebar-item">
                     <a href="{{ route('kendaraan-masuk') }}" class="sidebar-link {{ request()->routeIs('kendaraan-masuk') ? 'active' : '' }}">
                         <i class="fas fa-arrow-right-to-bracket"></i> Kendaraan Masuk

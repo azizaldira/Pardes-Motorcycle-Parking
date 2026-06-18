@@ -25,19 +25,20 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    // Rute Staff & Admin
-    Route::middleware('role:admin,staff')->group(function () {
+    // Rute Khusus Staff
+    Route::middleware('role:staff')->group(function () {
         Route::get('/kendaraan-masuk', [EntryController::class, 'index'])->name('kendaraan-masuk');
         Route::post('/kendaraan-masuk/simpan', [EntryController::class, 'store'])->name('kendaraan-masuk.store');
         Route::get('/cari-kendaraan', [SearchController::class, 'index'])->name('cari-kendaraan');
         Route::get('/kendaraan-keluar', [ExitController::class, 'index'])->name('kendaraan-keluar');
         Route::get('/kendaraan-keluar/{id}/proses', [ExitController::class, 'process'])->name('kendaraan-keluar.process');
         Route::post('/kendaraan-keluar/{id}/checkout', [ExitController::class, 'checkout'])->name('kendaraan-keluar.checkout');
+    });
         Route::get('/users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
         Route::post('/users', [\App\Http\Controllers\UserController::class, 'store'])->name('users.store');
         Route::put('/users/{id}', [\App\Http\Controllers\UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{id}', [\App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
-    });
+
 
     // Rute Khusus Admin
     Route::middleware('role:admin')->group(function () {
@@ -49,6 +50,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/laporan/export/pdf', [App\Http\Controllers\ReportController::class, 'exportPdf'])->name('laporan.pdf');
         Route::get('/laporan/export/excel', [App\Http\Controllers\ReportController::class, 'exportExcel'])->name('laporan.excel');
 
-        Route::get('/pengaturan-bisnis', [PlaceholderController::class, 'index'])->name('pengaturan-bisnis');
+        Route::get('/pengaturan-bisnis', [\App\Http\Controllers\BusinessSettingController::class, 'index'])->name('pengaturan-bisnis');
+        Route::put('/pengaturan-bisnis', [\App\Http\Controllers\BusinessSettingController::class, 'update'])->name('pengaturan-bisnis.update');
+        Route::delete('/pengaturan-bisnis/logo', [\App\Http\Controllers\BusinessSettingController::class, 'removeLogo'])->name('pengaturan-bisnis.logo.destroy');
     });
 });

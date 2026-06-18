@@ -171,7 +171,10 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" style="padding: 3rem 2rem; text-align: center; color: var(--text-muted);">Tidak ada data staf.</td>
+                                <td colspan="5" style="padding: 3rem 2rem; text-align: center; color: var(--text-muted);">
+                                    <i class="fas fa-users-slash" style="font-size: 2.5rem; color: #d1d5db; margin-bottom: 1rem; display: block;"></i>
+                                    <p style="margin: 0; font-weight: 500;">Tidak ada data staf.</p>
+                                </td>
                             </tr>
                             @endforelse
                         @else

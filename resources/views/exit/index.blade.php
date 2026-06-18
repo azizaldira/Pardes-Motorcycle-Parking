@@ -27,7 +27,7 @@
                 
                 <div class="form-group" style="margin-bottom: 0;">
                     <label for="plate" class="form-label" style="font-size: 0.875rem;">Cari Plat Nomor</label>
-                    <input type="text" name="plate" id="plate" class="form-control" placeholder="Contoh: B 1234 XYZ" value="{{ request('plate') }}">
+                    <input type="text" name="plate" id="plate" class="form-control" placeholder="Contoh: B1234KKN" value="{{ request('plate') }}">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 0;">
@@ -42,13 +42,13 @@
                 <div class="form-group" style="margin-bottom: 0;">
                     <label for="vehicle_type" class="form-label" style="font-size: 0.875rem;">Tipe Motor</label>
                     <select name="vehicle_type" id="vehicle_type" class="form-control" onchange="this.form.submit()">
-                        <option value="Semua Tipe" {{ request('vehicle_type') == 'Semua Tipe' ? 'selected' : '' }}>Semua Tipe</option>
+                        <option value="">Semua Tipe</option>
                         <option value="Matic" {{ request('vehicle_type') == 'Matic' ? 'selected' : '' }}>Matic</option>
-                        <option value="Manual" {{ request('vehicle_type') == 'Manual' ? 'selected' : '' }}>Manual</option>
-                        <option value="Kopling" {{ request('vehicle_type') == 'Kopling' ? 'selected' : '' }}>Kopling</option>
+                        <option value="Bebek" {{ request('vehicle_type') == 'Bebek' ? 'selected' : '' }}>Bebek</option>
+                        <option value="Sport" {{ request('vehicle_type') == 'Sport' ? 'selected' : '' }}>Sport</option>
                     </select>
                 </div>
-                
+
                 <!-- Hidden submit button in case user presses enter in text input -->
                 <button type="submit" style="display: none;"></button>
             </form>

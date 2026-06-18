@@ -11,7 +11,7 @@
                 <div class="input-wrapper" style="flex: 1; margin: 0;">
                     <i class="fas fa-search" style="left: 1.5rem; color: var(--text-muted);"></i>
                     <input type="text" name="plate" class="form-control" 
-                           placeholder="Masukkan plat nomor (contoh: B 1234 XYZ)" 
+                           placeholder="Masukkan plat nomor (contoh: B1234KKN)" 
                            value="{{ $plate ?? '' }}" required 
                            style="padding-left: 3.5rem; margin: 0; height: 100%; border-radius: var(--radius-md);">
                 </div>

@@ -21,7 +21,7 @@
                 <div class="form-group mb-6">
                     <label for="plate_number" class="form-label" style="font-weight: 600;">Plat Nomor <span style="color: #ef4444;">*</span></label>
                     <input type="text" id="plate_number" name="plate_number" class="form-control" 
-                           placeholder="Contoh: B 1234 XYZ" 
+                           placeholder="Contoh: B1234KKN" 
                            value="{{ old('plate_number') }}" required style="text-transform: uppercase;">
                     @error('plate_number')
                         <span style="color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
@@ -31,12 +31,10 @@
                 <!-- Tipe Motor -->
                 <div class="form-group mb-6">
                     <label for="vehicle_type" class="form-label" style="font-weight: 600;">Tipe Motor</label>
-                    <select id="vehicle_type" name="vehicle_type" class="form-control">
+                    <select id="vehicle_type" name="vehicle_type" class="form-control" required>
                         <option value="Matic" {{ old('vehicle_type') == 'Matic' ? 'selected' : '' }}>Matic</option>
                         <option value="Bebek" {{ old('vehicle_type') == 'Bebek' ? 'selected' : '' }}>Bebek</option>
                         <option value="Sport" {{ old('vehicle_type') == 'Sport' ? 'selected' : '' }}>Sport</option>
-                        <option value="Kopling" {{ old('vehicle_type') == 'Kopling' ? 'selected' : '' }}>Kopling</option>
-                        <option value="Lainnya" {{ old('vehicle_type') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                     </select>
                 </div>
 
