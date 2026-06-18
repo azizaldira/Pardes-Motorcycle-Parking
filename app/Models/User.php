@@ -36,4 +36,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function entryTransactions()
+    {
+        return $this->hasMany(ParkingTransaction::class, 'entry_user_id');
+    }
+
+    public function exitTransactions()
+    {
+        return $this->hasMany(ParkingTransaction::class, 'exit_user_id');
+    }
 }

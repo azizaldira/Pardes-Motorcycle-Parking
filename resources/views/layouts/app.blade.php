@@ -64,7 +64,7 @@
 
                 <!-- Manajemen Akun (Admin & Staff) -->
                 <li class="sidebar-item mt-4">
-                    <a href="{{ route('manajemen-akun') }}" class="sidebar-link {{ request()->routeIs('manajemen-akun') ? 'active' : '' }}">
+                    <a href="{{ route('users.index') }}" class="sidebar-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
                         <i class="fas fa-user-cog"></i> Manajemen Akun
                     </a>
                 </li>

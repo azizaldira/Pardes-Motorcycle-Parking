@@ -7,6 +7,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PlaceholderController;
 use App\Http\Controllers\AccountController;
 
+use App\Http\Controllers\TariffController;
+use App\Http\Controllers\EntryController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ExitController;
+
 Route::get('/', function () {
     return redirect('/dashboard');
 });
@@ -22,16 +27,28 @@ Route::middleware('auth')->group(function () {
     
     // Rute Staff & Admin
     Route::middleware('role:admin,staff')->group(function () {
-        Route::get('/kendaraan-masuk', [PlaceholderController::class, 'index'])->name('kendaraan-masuk');
-        Route::get('/cari-kendaraan', [PlaceholderController::class, 'index'])->name('cari-kendaraan');
-        Route::get('/kendaraan-keluar', [PlaceholderController::class, 'index'])->name('kendaraan-keluar');
-        Route::get('/manajemen-akun', [AccountController::class, 'index'])->name('manajemen-akun');
+        Route::get('/kendaraan-masuk', [EntryController::class, 'index'])->name('kendaraan-masuk');
+        Route::post('/kendaraan-masuk/simpan', [EntryController::class, 'store'])->name('kendaraan-masuk.store');
+        Route::get('/cari-kendaraan', [SearchController::class, 'index'])->name('cari-kendaraan');
+        Route::get('/kendaraan-keluar', [ExitController::class, 'index'])->name('kendaraan-keluar');
+        Route::get('/kendaraan-keluar/{id}/proses', [ExitController::class, 'process'])->name('kendaraan-keluar.process');
+        Route::post('/kendaraan-keluar/{id}/checkout', [ExitController::class, 'checkout'])->name('kendaraan-keluar.checkout');
+        Route::get('/users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+        Route::post('/users', [\App\Http\Controllers\UserController::class, 'store'])->name('users.store');
+        Route::put('/users/{id}', [\App\Http\Controllers\UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{id}', [\App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
     });
 
     // Rute Khusus Admin
     Route::middleware('role:admin')->group(function () {
-        Route::get('/pengaturan-tarif', [PlaceholderController::class, 'index'])->name('pengaturan-tarif');
-        Route::get('/laporan', [PlaceholderController::class, 'index'])->name('laporan');
+        Route::get('/pengaturan-tarif', [TariffController::class, 'index'])->name('pengaturan-tarif');
+        Route::put('/pengaturan-tarif/update', [TariffController::class, 'update'])->name('pengaturan-tarif.update');
+        
+        // Report Routes
+        Route::get('/laporan', [App\Http\Controllers\ReportController::class, 'index'])->name('laporan');
+        Route::get('/laporan/export/pdf', [App\Http\Controllers\ReportController::class, 'exportPdf'])->name('laporan.pdf');
+        Route::get('/laporan/export/excel', [App\Http\Controllers\ReportController::class, 'exportExcel'])->name('laporan.excel');
+
         Route::get('/pengaturan-bisnis', [PlaceholderController::class, 'index'])->name('pengaturan-bisnis');
     });
 });
