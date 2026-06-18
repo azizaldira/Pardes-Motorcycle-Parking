@@ -85,9 +85,11 @@
             <!-- Header -->
             <header class="app-header">
                 <div class="header-date">
-                    <i class="fas fa-times" style="color: var(--text-muted); cursor: pointer; margin-right: 1rem;"></i>
-                    {{ now()->translatedFormat('l, d F Y') }} <br>
-                    {{ now()->format('H.i.s') }}
+                    <i class="fas fa-times" id="sidebarToggle" style="color: var(--text-muted); cursor: pointer; margin-right: 1rem;"></i>
+                    <div style="line-height: 1.2;">
+                        <span id="current-date">{{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}</span><br>
+                        <span id="live-clock">{{ date('H:i:s') }} WIB</span>
+                    </div>
                 </div>
                 
                 <div class="header-user">
@@ -108,5 +110,46 @@
             </div>
         </main>
     </div>
+
+    <!-- Live Clock & Sidebar Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Live Clock Update
+            function updateClock() {
+                const now = new Date();
+                
+                // Format Time
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                document.getElementById('live-clock').textContent = `${hours}:${minutes}:${seconds} WIB`;
+            }
+            
+            // Set locale date initially via JS to guarantee Indonesian translation if PHP locale fails
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const now = new Date();
+            document.getElementById('current-date').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            // Sidebar Toggle
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+            
+            sidebarToggle.addEventListener('click', () => {
+                if (sidebar.style.display === 'none') {
+                    sidebar.style.display = 'flex';
+                    sidebarToggle.classList.remove('fa-bars');
+                    sidebarToggle.classList.add('fa-times');
+                } else {
+                    sidebar.style.display = 'none';
+                    sidebarToggle.classList.remove('fa-times');
+                    sidebarToggle.classList.add('fa-bars');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
