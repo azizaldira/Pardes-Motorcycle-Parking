@@ -7,18 +7,25 @@
 
         <!-- Search Form Card -->
         <div class="table-card" style="padding: 1.5rem; margin-bottom: 2rem;">
-            <form action="{{ route('cari-kendaraan') }}" method="GET" style="display: flex; gap: 1rem; align-items: stretch;">
-                <div class="input-wrapper" style="flex: 1; margin: 0;">
+            <form action="{{ route('cari-kendaraan') }}" method="GET" style="display: flex; gap: 1rem; align-items: stretch; flex-wrap: wrap;">
+                <div class="input-wrapper" style="flex: 1; min-width: 200px; margin: 0;">
                     <i class="fas fa-search" style="left: 1.5rem; color: var(--text-muted);"></i>
                     <input type="text" name="plate" class="form-control" 
-                           placeholder="Masukkan plat nomor (contoh: B1234KKN)" 
-                           value="{{ $plate ?? '' }}" required 
-                           style="padding-left: 3.5rem; margin: 0; height: 100%; border-radius: var(--radius-md);">
+                           placeholder="Contoh: B 1234 KKN" 
+                           pattern="^[A-Za-z]{1,2}\s*[0-9]{3,4}\s*[A-Za-z]{2,3}$"
+                           title="Format plat nomor tidak valid. Gunakan format seperti B 1234 KNJ (1–2 huruf, 3–4 angka, 2–3 huruf)."
+                           value="{{ old('plate', $plate ?? '') }}" required 
+                           style="padding-left: 3.5rem; margin: 0; height: 100%; border-radius: var(--radius-md); text-transform: uppercase; width: 100%;">
                 </div>
-                <button type="submit" class="btn btn-primary" style="padding: 0 2rem; border-radius: var(--radius-md); font-weight: 500;">
+                <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem; border-radius: var(--radius-md); font-weight: 500;">
                     Cari
                 </button>
             </form>
+            @error('plate')
+                <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.75rem;">
+                    <i class="fas fa-exclamation-circle" style="margin-right: 0.25rem;"></i> {{ $message }}
+                </div>
+            @enderror
         </div>
 
         <!-- Search Results -->

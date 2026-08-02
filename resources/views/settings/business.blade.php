@@ -33,19 +33,22 @@
             <div style="margin-bottom: 2rem;">
                 <label class="form-label" style="font-size: 1rem; color: var(--text-main); font-weight: 600;">Nama Usaha <span style="color: #dc2626;">*</span></label>
                 <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem;">Akan ditampilkan pada Kop Surat Laporan PDF dan Dashboard.</p>
-                <input type="text" name="business_name" value="{{ old('business_name', $setting->business_name ?? '') }}" class="form-input" style="width: 100%; font-size: 1rem;" required maxlength="100" placeholder="Misal: Penitipan Motor Parde's">
+                <input type="text" name="business_name" id="business_name" value="{{ old('business_name', $business->business_name ?? '') }}" class="form-input" style="width: 100%; font-size: 1rem;" required minlength="3" maxlength="18" placeholder="Misal: Penitipan Motor ABC">
+                <div id="nameWarning" style="color: #eab308; font-size: 0.875rem; margin-top: 0.5rem; display: none;">
+                    <i class="fas fa-info-circle"></i> Batas maksimal nama usaha (18 karakter) telah tercapai.
+                </div>
             </div>
 
             <div style="margin-bottom: 2.5rem;">
                 <label class="form-label" style="font-size: 1rem; color: var(--text-main); font-weight: 600;">Logo Bisnis</label>
-                <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1rem;">Format yang diizinkan: JPG, JPEG, PNG, WebP. Ukuran Maksimal: 2 MB.</p>
+                <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1rem;">Format yang diizinkan: JPG, JPEG, PNG. Ukuran Maksimal: 2 MB.</p>
                 
                 <div style="display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap;">
                     
                     <!-- Preview Area -->
                     <div style="background-color: #f9fafb; border: 2px dashed #d1d5db; border-radius: 12px; width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; flex-direction: column; overflow: hidden; position: relative;" id="logoPreviewContainer">
-                        @if($setting && $setting->business_logo)
-                            <img src="{{ asset('storage/' . $setting->business_logo) }}" alt="Logo Bisnis" style="max-width: 100%; max-height: 100%; object-fit: contain;" id="currentLogo">
+                        @if($business && $business->business_logo)
+                            <img src="{{ asset('storage/' . $business->business_logo) }}" alt="Logo Bisnis" style="max-width: 100%; max-height: 100%; object-fit: contain;" id="currentLogo">
                         @else
                             <i class="fas fa-motorcycle" style="font-size: 4rem; color: #9ca3af; margin-bottom: 1rem;" id="defaultIcon"></i>
                             <span style="color: #6b7280; font-size: 0.875rem; font-weight: 500;" id="defaultText">Belum ada logo</span>
@@ -54,16 +57,16 @@
 
                     <!-- Upload Controls -->
                     <div style="flex: 1;">
-                        <input type="file" name="business_logo" id="business_logo" accept="image/jpeg, image/png, image/jpg, image/webp" style="display: none;" onchange="previewImage(this)">
+                        <input type="file" name="business_logo" id="business_logo" accept="image/jpeg, image/png, image/jpg" style="display: none;" onchange="previewImage(this)">
                         
                         <label for="business_logo" class="btn btn-primary" style="display: inline-block; cursor: pointer; margin-bottom: 1rem;">
                             <i class="fas fa-upload" style="margin-right: 0.5rem;"></i> Unggah Gambar Baru
                         </label>
                         <br>
 
-                        @if($setting && $setting->business_logo)
+                        @if($business && $business->business_logo)
                         <!-- Tombol Hapus Berdiri Terpisah dengan Form agar tak tersubmit campur -->
-                        <button type="button" class="btn" style="background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 0.5rem 1rem;" onclick="if(confirm('Yakin ingin menghapus logo permanen?')) document.getElementById('deleteLogoForm').submit();">
+                        <button type="button" class="btn" style="background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 0.5rem 1rem;" onclick="showConfirmModal('Yakin ingin menghapus logo permanen? Tindakan ini tidak dapat dibatalkan.', () => document.getElementById('deleteLogoForm').submit());">
                             <i class="fas fa-trash-alt" style="margin-right: 0.5rem;"></i> Hapus Logo Saat Ini
                         </button>
                         @endif
@@ -81,7 +84,7 @@
         </form>
         
         <!-- Hidden Form for Deletion -->
-        @if($setting && $setting->business_logo)
+        @if($business && $business->business_logo)
         <form id="deleteLogoForm" action="{{ route('pengaturan-bisnis.logo.destroy') }}" method="POST" style="display: none;">
             @csrf
             @method('DELETE')
@@ -91,6 +94,24 @@
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const nameInput = document.getElementById('business_name');
+        const nameWarning = document.getElementById('nameWarning');
+        
+        nameInput.addEventListener('input', function() {
+            if (this.value.length >= 18) {
+                nameWarning.style.display = 'block';
+            } else {
+                nameWarning.style.display = 'none';
+            }
+        });
+        
+        // Trigger check on load in case it's already max
+        if(nameInput.value.length >= 18) {
+            nameWarning.style.display = 'block';
+        }
+    });
+
     function previewImage(input) {
         const previewContainer = document.getElementById('logoPreviewContainer');
         const fileInfo = document.getElementById('fileInfo');
@@ -98,9 +119,17 @@
         if (input.files && input.files[0]) {
             const file = input.files[0];
             
+            // Cek format file
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!allowedTypes.includes(file.type)) {
+                fileInfo.innerHTML = `<span style="color: #dc2626; font-weight: 500;"><i class="fas fa-exclamation-circle"></i> Format file tidak sesuai! Gunakan JPG/PNG.</span>`;
+                input.value = "";
+                return;
+            }
+            
             // Cek ukuran
             if(file.size > 2048 * 1024) {
-                alert("Ukuran file melebihi 2 MB!");
+                fileInfo.innerHTML = `<span style="color: #dc2626; font-weight: 500;"><i class="fas fa-exclamation-circle"></i> Ukuran file melebihi 2 MB!</span>`;
                 input.value = "";
                 return;
             }

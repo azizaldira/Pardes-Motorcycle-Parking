@@ -10,10 +10,9 @@ class TariffController extends Controller
 {
     public function index()
     {
-        $business = BusinessSetting::first();
         $tariff = Tariff::first();
         
-        return view('tariff.index', compact('business', 'tariff'));
+        return view('tariff.index', compact('tariff'));
     }
 
     public function update(Request $request)
@@ -27,10 +26,15 @@ class TariffController extends Controller
         ]);
 
         $validated = $request->validate([
-            'base_rate' => ['required', 'numeric', 'min:0'],
-            'hourly_rate' => ['required', 'numeric', 'min:0'],
-            'overnight_rate' => ['required', 'numeric', 'min:0'],
-            'lost_ticket_fine' => ['required', 'numeric', 'min:0'],
+            'base_rate' => ['required', 'numeric', 'min:500'],
+            'hourly_rate' => ['required', 'numeric', 'min:500'],
+            'overnight_rate' => ['required', 'numeric', 'min:500'],
+            'lost_ticket_fine' => ['required', 'numeric', 'min:500'],
+        ], [
+            'base_rate.min' => 'Tarif minimal adalah Rp 500.',
+            'hourly_rate.min' => 'Tarif minimal adalah Rp 500.',
+            'overnight_rate.min' => 'Tarif minimal adalah Rp 500.',
+            'lost_ticket_fine.min' => 'Denda minimal adalah Rp 500.',
         ]);
 
         $tariff = Tariff::first();

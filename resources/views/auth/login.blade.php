@@ -21,12 +21,12 @@
                 @csrf
                 
                 <div class="form-group">
-                    <label for="username" class="form-label">Username</label>
+                    <label for="email" class="form-label">Email</label>
                     <div class="input-wrapper">
-                        <i class="far fa-user"></i>
-                        <input type="text" id="username" name="username" class="form-control" placeholder="Masukkan username" value="{{ old('username') }}" required autofocus>
+                        <i class="far fa-envelope"></i>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Masukkan email" value="{{ old('email') }}" required autofocus>
                     </div>
-                    @error('username')
+                    @error('email')
                         <span style="color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
                     @enderror
                 </div>
@@ -37,6 +37,10 @@
                         <i class="fas fa-lock"></i>
                         <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan password" required>
                     </div>
+                </div>
+
+                <div class="flex justify-between items-center mb-6">
+                    <a href="{{ route('password.request') }}" style="color: #3b82f6; font-size: 0.875rem; text-decoration: none;">Lupa Password?</a>
                 </div>
 
                 <button type="submit" class="btn btn-primary w-full">Masuk</button>

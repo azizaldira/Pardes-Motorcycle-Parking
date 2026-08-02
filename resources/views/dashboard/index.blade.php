@@ -4,6 +4,12 @@
     <h1 class="page-title" style="color: #1f2937;">Dashboard</h1>
     <p class="page-subtitle" style="margin-bottom: 2rem;">Ringkasan aktivitas parkir hari ini</p>
 
+    @if(session('success'))
+        <div style="background-color: #d1fae5; color: #065f46; padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; font-size: 0.875rem;">
+            <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i> {{ session('success') }}
+        </div>
+    @endif
+
     <div class="dashboard-grid">
         <!-- Stats Cards -->
         <div class="stat-card">

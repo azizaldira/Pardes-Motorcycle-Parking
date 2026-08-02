@@ -11,12 +11,17 @@ class SearchController extends Controller
 {
     public function index(Request $request)
     {
-        $business = BusinessSetting::first();
         $plate = $request->query('plate');
         $transaction = null;
         $searched = false;
 
         if ($plate) {
+            $request->validate([
+                'plate' => ['required', 'string', 'regex:/^[A-Za-z]{1,2}\s*[0-9]{3,4}\s*[A-Za-z]{2,3}$/']
+            ], [
+                'plate.regex' => 'Format plat nomor tidak valid. Gunakan format seperti B 1234 KNJ (1–2 huruf, 3–4 angka, 2–3 huruf).'
+            ]);
+
             $searched = true;
             // Normalize plate
             $normalizedPlate = strtoupper(preg_replace('/\s+/', '', $plate));
@@ -35,6 +40,6 @@ class SearchController extends Controller
             }
         }
 
-        return view('search.index', compact('business', 'transaction', 'searched', 'plate'));
+        return view('search.index', compact('transaction', 'searched', 'plate'));
     }
 }

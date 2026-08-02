@@ -27,7 +27,14 @@
                 
                 <div class="form-group" style="margin-bottom: 0;">
                     <label for="plate" class="form-label" style="font-size: 0.875rem;">Cari Plat Nomor</label>
-                    <input type="text" name="plate" id="plate" class="form-control" placeholder="Contoh: B1234KKN" value="{{ request('plate') }}">
+                    <input type="text" name="plate" id="plate" class="form-control" 
+                           placeholder="Contoh: B1234KKN" 
+                           pattern="^[A-Za-z]{1,2}\s*[0-9]{3,4}\s*[A-Za-z]{2,3}$"
+                           title="Format plat nomor tidak valid. Gunakan format seperti B 1234 KNJ (1–2 huruf, 3–4 angka, 2–3 huruf)."
+                           value="{{ old('plate', request('plate')) }}" style="text-transform: uppercase;">
+                    @error('plate')
+                        <span style="color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="form-group" style="margin-bottom: 0;">
@@ -63,30 +70,44 @@
                 </div>
                 <i class="far fa-clock" style="color: var(--text-muted); font-size: 1.25rem;"></i>
             </div>
-            <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse;">
+            <div class="table-responsive">
+                <table class="table">
                     <thead>
-                        <tr style="border-bottom: 1px solid var(--border-color); background-color: #f9fafb;">
-                            <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Plat Nomor</th>
-                            <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Tipe Motor</th>
-                            <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Waktu Masuk</th>
-                            <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Durasi</th>
-                            <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Estimasi Biaya</th>
-                            <th style="padding: 1rem 1.5rem; text-align: right; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Aksi</th>
+                        <tr>
+                            <th>Plat Nomor</th>
+                            <th>Tipe Motor</th>
+                            <th>Waktu Masuk</th>
+                            <th>Durasi</th>
+                            <th>Estimasi Biaya</th>
+                            <th style="text-align: right;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($activeTransactions as $transaction)
-                        <tr style="border-bottom: 1px solid var(--border-color);">
-                            <td style="padding: 1rem 1.5rem; color: var(--text-main);">{{ $transaction->formatted_plate }}</td>
-                            <td style="padding: 1rem 1.5rem; color: var(--text-muted);">{{ $transaction->vehicle_type }}</td>
-                            <td style="padding: 1rem 1.5rem; color: var(--text-muted);">{{ $transaction->entry_time->format('d/m/Y, H.i') }}</td>
-                            <td style="padding: 1rem 1.5rem; color: var(--text-muted);">{{ $transaction->formatted_duration }}</td>
-                            <td style="padding: 1rem 1.5rem; color: var(--text-main);">Rp {{ number_format($transaction->estimasi_biaya, 0, ',', '.') }}</td>
-                            <td style="padding: 1rem 1.5rem; text-align: right;">
-                                <a href="{{ route('kendaraan-keluar.process', $transaction->id) }}" class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.875rem; font-weight: 500; border-radius: var(--radius-md);">
-                                    Proses
-                                </a>
+                        <tr>
+                            <td>{{ $transaction->formatted_plate }}</td>
+                            <td style="color: var(--text-muted);">{{ $transaction->vehicle_type }}</td>
+                            <td style="color: var(--text-muted);">{{ $transaction->entry_time->format('d/m/Y, H.i') }}</td>
+                            <td style="color: var(--text-muted);">{{ $transaction->formatted_duration }}</td>
+                            <td>Rp {{ number_format($transaction->estimasi_biaya, 0, ',', '.') }}</td>
+                            <td style="text-align: right; white-space: nowrap;">
+                                <div style="display: inline-flex; gap: 0.5rem; justify-content: flex-end;">
+                                    <a href="{{ route('kendaraan-keluar.process', $transaction->id) }}" class="btn btn-primary" title="Proses Keluar" style="padding: 0; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--radius-md);">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                    </a>
+                                    
+                                    <button onclick="openEditKendaraanModal({{ $transaction->id }}, '{{ $transaction->plate_number }}', '{{ $transaction->vehicle_type }}')" class="btn" title="Edit Kendaraan" style="padding: 0; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--radius-md); background-color: #f3f4f6; color: #374151; border: 1px solid #d1d5db;">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+
+                                    <form action="{{ route('kendaraan.destroy', $transaction->id) }}" method="POST" style="margin: 0;" onsubmit="event.preventDefault(); showConfirmModal('Apakah Anda yakin ingin menghapus data kendaraan ini? Tindakan ini hanya boleh dilakukan jika terjadi kesalahan input dan tidak dapat dibatalkan.', () => this.submit());">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn" title="Hapus Kendaraan" style="padding: 0; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--radius-md); background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5;">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         @empty
@@ -102,4 +123,54 @@
             </div>
         </div>
     </div>
+
+    <!-- Edit Kendaraan Modal -->
+    <div id="editKendaraanModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(2px);">
+        <div class="modal-content" style="background: white; padding: 2rem; border-radius: var(--radius-lg); width: 100%; max-width: 400px; box-shadow: var(--shadow-lg); margin: 1rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--text-main);">Edit Data Kendaraan</h3>
+            <form id="editKendaraanForm" method="POST" action="">
+                @csrf
+                @method('PUT')
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.875rem;">Plat Nomor</label>
+                    <input type="text" name="plate_number" id="editPlateNumber" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-md); text-transform: uppercase;" required pattern="^[A-Za-z]{1,2}\s*[0-9]{3,4}\s*[A-Za-z]{2,3}$" title="Contoh: B 1234 KKN">
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.875rem;">Tipe Motor</label>
+                    <select name="vehicle_type" id="editVehicleType" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-md);" required>
+                        <option value="Bebek">Bebek</option>
+                        <option value="Matic">Matic</option>
+                        <option value="Sport">Sport</option>
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeEditKendaraanModal()" style="padding: 0.625rem 1.25rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: white;">Batal</button>
+                    <button type="submit" class="btn btn-primary" style="padding: 0.625rem 1.25rem; border-radius: var(--radius-md); background: var(--primary); color: white; border: none;">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openEditKendaraanModal(id, plate, type) {
+            const form = document.getElementById('editKendaraanForm');
+            form.action = `/kendaraan/${id}`;
+            document.getElementById('editPlateNumber').value = plate;
+            document.getElementById('editVehicleType').value = type;
+            
+            const modal = document.getElementById('editKendaraanModal');
+            modal.style.display = 'flex';
+        }
+
+        function closeEditKendaraanModal() {
+            document.getElementById('editKendaraanModal').style.display = 'none';
+        }
+
+        // Tutup modal jika klik di luar modal
+        document.getElementById('editKendaraanModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEditKendaraanModal();
+            }
+        });
+    </script>
 @endsection

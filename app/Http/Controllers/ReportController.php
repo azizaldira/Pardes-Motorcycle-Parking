@@ -13,7 +13,6 @@ class ReportController extends Controller
 {
     public function index(Request $request)
     {
-        $business = BusinessSetting::first();
         $type = $request->query('type', 'pendapatan'); // pendapatan, kendaraan, karcis_hilang, petugas
         $period = $request->query('period', 'harian'); // harian, bulanan, tahunan
         
@@ -184,7 +183,7 @@ class ReportController extends Controller
             }
         }
 
-        $data = compact('business', 'type', 'period', 'dateFilter', 'periodeStr', 'metrics', 'chartLabels', 'chartData', 'transactions', 'petugasData');
+        $data = compact('type', 'period', 'dateFilter', 'periodeStr', 'metrics', 'chartLabels', 'chartData', 'transactions', 'petugasData');
         
         if ($request->routeIs('laporan.pdf')) {
             $pdf = Pdf::loadView('report.pdf', $data);

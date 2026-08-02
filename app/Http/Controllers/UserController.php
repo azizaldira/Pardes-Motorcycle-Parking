@@ -28,14 +28,16 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username',
+            'email' => ['required', 'email', 'ends_with:@gmail.com', 'unique:users,email'],
             'password' => 'required|string|min:6',
             'role' => 'required|in:admin,staff',
+        ], [
+            'email.ends_with' => 'Email harus menggunakan domain @gmail.com',
         ]);
 
         User::create([
             'name' => $request->name,
-            'username' => $request->username,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
@@ -55,7 +57,7 @@ class UserController extends Controller
 
         $rules = [
             'name' => 'required|string|max:255',
-            'username' => ['required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($userToUpdate->id)],
+            'email' => ['required', 'email', 'ends_with:@gmail.com', Rule::unique('users', 'email')->ignore($userToUpdate->id)],
         ];
 
         // Role can only be changed by admin AND if it's not their own account
@@ -67,11 +69,13 @@ class UserController extends Controller
             $rules['password'] = 'string|min:6';
         }
 
-        $validated = $request->validate($rules);
+        $validated = $request->validate($rules, [
+            'email.ends_with' => 'Email harus menggunakan domain @gmail.com',
+        ]);
 
         $updateData = [
             'name' => $validated['name'],
-            'username' => $validated['username'],
+            'email' => $validated['email'],
         ];
 
         if ($request->filled('password')) {

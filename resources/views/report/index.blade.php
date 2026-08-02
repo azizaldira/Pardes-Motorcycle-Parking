@@ -2,8 +2,8 @@
 
 @section('content')
     <div style="padding: 2rem;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
-            <div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+            <div style="flex: 1; min-width: 250px;">
                 <h1 class="page-title" style="margin-bottom: 0.25rem; font-size: 1.5rem; font-weight: 600; color: var(--text-main);">Laporan Analitik</h1>
                 <p style="color: var(--text-muted); font-size: 0.875rem;">Pantau kinerja operasional, pendapatan, dan staf secara real-time</p>
             </div>
@@ -138,36 +138,36 @@
                     Detail {{ $type === 'petugas' ? 'Kinerja Petugas' : 'Transaksi' }}
                 </h3>
             </div>
-            <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse;">
+            <div class="table-responsive">
+                <table class="table">
                     <thead>
-                        <tr style="border-bottom: 1px solid var(--border-color); background-color: #f9fafb;">
+                        <tr>
                             @if($type === 'petugas')
-                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Nama Petugas</th>
-                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Kendaraan Diinput</th>
-                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Kendaraan Diproses Keluar</th>
-                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Pendapatan Diproses</th>
-                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Karcis Hilang Ditangani</th>
+                                <th>Nama Petugas</th>
+                                <th>Kendaraan Diinput</th>
+                                <th>Kendaraan Diproses Keluar</th>
+                                <th>Pendapatan Diproses</th>
+                                <th>Karcis Hilang Ditangani</th>
                             @else
-                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Waktu</th>
-                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Plat Nomor</th>
-                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Durasi</th>
-                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Biaya</th>
-                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Metode</th>
-                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Petugas Masuk</th>
-                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">Petugas Keluar</th>
+                                <th>Waktu</th>
+                                <th>Plat Nomor</th>
+                                <th>Durasi</th>
+                                <th>Biaya</th>
+                                <th>Metode</th>
+                                <th>Petugas Masuk</th>
+                                <th>Petugas Keluar</th>
                             @endif
                         </tr>
                     </thead>
                     <tbody>
                         @if($type === 'petugas')
                             @forelse($petugasData as $p)
-                            <tr style="border-bottom: 1px solid var(--border-color);">
-                                <td style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-main); font-size: 0.875rem;">{{ $p->name }}</td>
-                                <td style="padding: 1rem 1.5rem; color: var(--text-muted); font-size: 0.875rem;">{{ number_format($p->input_count, 0, ',', '.') }}</td>
-                                <td style="padding: 1rem 1.5rem; color: var(--text-muted); font-size: 0.875rem;">{{ number_format($p->checkout_count, 0, ',', '.') }}</td>
-                                <td style="padding: 1rem 1.5rem; font-weight: 500; color: #16a34a; font-size: 0.875rem;">Rp {{ number_format($p->revenue, 0, ',', '.') }}</td>
-                                <td style="padding: 1rem 1.5rem; color: #dc2626; font-size: 0.875rem;">{{ number_format($p->lost_tickets, 0, ',', '.') }}</td>
+                            <tr>
+                                <td>{{ $p->name }}</td>
+                                <td>{{ number_format($p->input_count, 0, ',', '.') }}</td>
+                                <td>{{ number_format($p->checkout_count, 0, ',', '.') }}</td>
+                                <td style="color: #16a34a; font-weight: 500;">Rp {{ number_format($p->revenue, 0, ',', '.') }}</td>
+                                <td style="color: #dc2626;">{{ number_format($p->lost_tickets, 0, ',', '.') }}</td>
                             </tr>
                             @empty
                             <tr>
@@ -179,22 +179,22 @@
                             @endforelse
                         @else
                             @forelse($transactions as $t)
-                            <tr style="border-bottom: 1px solid var(--border-color);">
-                                <td style="padding: 1rem 1.5rem; color: var(--text-muted); font-size: 0.875rem;">
+                            <tr>
+                                <td>
                                     {{ $t->entry_time->format('H:i') }} - {{ $t->exit_time->format('H:i') }}<br>
                                     <small style="color: #9ca3af;">{{ $t->exit_time->format('d/m/Y') }}</small>
                                 </td>
-                                <td style="padding: 1rem 1.5rem; font-weight: 500; color: var(--text-main); font-size: 0.875rem;">{{ $t->formatted_plate }}</td>
-                                <td style="padding: 1rem 1.5rem; color: var(--text-muted); font-size: 0.875rem;">{{ round($t->parking_duration / 60, 2) }} jam</td>
-                                <td style="padding: 1rem 1.5rem; font-weight: 500; color: var(--text-main); font-size: 0.875rem;">Rp {{ number_format($t->parking_fee, 0, ',', '.') }}</td>
-                                <td style="padding: 1rem 1.5rem; color: var(--text-muted); font-size: 0.875rem;">
+                                <td>{{ $t->formatted_plate }}</td>
+                                <td>{{ round($t->parking_duration / 60, 2) }} jam</td>
+                                <td>Rp {{ number_format($t->parking_fee, 0, ',', '.') }}</td>
+                                <td>
                                     <span style="background-color: #f3f4f6; padding: 0.25rem 0.5rem; border-radius: 4px;">{{ $t->payment_method == 'cash' ? 'Tunai' : 'QRIS' }}</span>
                                     @if($t->lost_ticket)
                                     <span style="background-color: #fef2f2; color: #dc2626; padding: 0.25rem 0.5rem; border-radius: 4px; margin-left: 0.5rem;"><i class="fas fa-exclamation-triangle"></i></span>
                                     @endif
                                 </td>
-                                <td style="padding: 1rem 1.5rem; color: var(--text-muted); font-size: 0.875rem;">{{ $t->entryUser->name ?? '-' }}</td>
-                                <td style="padding: 1rem 1.5rem; color: var(--text-muted); font-size: 0.875rem;">{{ $t->exitUser->name ?? '-' }}</td>
+                                <td>{{ $t->entryUser->name ?? '-' }}</td>
+                                <td>{{ $t->exitUser->name ?? '-' }}</td>
                             </tr>
                             @empty
                             <tr>

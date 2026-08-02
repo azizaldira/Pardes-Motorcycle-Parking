@@ -12,13 +12,17 @@ class ExitController extends Controller
 {
     public function index(Request $request)
     {
-        $business = BusinessSetting::first();
         $tariff = Tariff::first();
         
         $query = ParkingTransaction::where('status', 'parked');
 
         // Apply filters
         if ($request->filled('plate')) {
+            $request->validate([
+                'plate' => ['required', 'string', 'regex:/^[A-Za-z]{1,2}\s*[0-9]{3,4}\s*[A-Za-z]{2,3}$/']
+            ], [
+                'plate.regex' => 'Format plat nomor tidak valid. Gunakan format seperti B 1234 KNJ (1–2 huruf, 3–4 angka, 2–3 huruf).'
+            ]);
             $normalizedPlate = strtoupper(preg_replace('/\s+/', '', $request->plate));
             $query->where('plate_number', 'like', '%' . $normalizedPlate . '%');
         }
@@ -49,7 +53,7 @@ class ExitController extends Controller
                                     return $item;
                                 });
 
-        return view('exit.index', compact('business', 'activeTransactions', 'request'));
+        return view('exit.index', compact('activeTransactions', 'request'));
     }
 
     private function calculateFeeDetails(ParkingTransaction $transaction, Tariff $tariff, Carbon $exitTime)
@@ -90,7 +94,6 @@ class ExitController extends Controller
 
     public function process($id)
     {
-        $business = BusinessSetting::first();
         $transaction = ParkingTransaction::with('entryUser')->findOrFail($id);
         
         if ($transaction->status !== 'parked') {
@@ -108,7 +111,7 @@ class ExitController extends Controller
         $minutes = $diff->i;
         $formattedDuration = "{$hours} Jam {$minutes} Menit";
 
-        return view('exit.process', compact('business', 'transaction', 'tariff', 'feeDetails', 'formattedDuration'));
+        return view('exit.process', compact('transaction', 'tariff', 'feeDetails', 'formattedDuration'));
     }
 
     public function checkout(Request $request, $id)

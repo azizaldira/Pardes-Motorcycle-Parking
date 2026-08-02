@@ -35,51 +35,53 @@
     @if(auth()->user()->role === 'admin')
     <!-- TAMPILAN ADMIN: Tabel Seluruh Pengguna -->
     <div class="table-card" style="padding: 1.5rem;">
-        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
-            <thead>
-                <tr style="border-bottom: 1px solid var(--border-color); background-color: #f9fafb;">
-                    <th style="padding: 1rem; text-align: left; font-size: 0.875rem; color: var(--text-main);">Nama Pengguna</th>
-                    <th style="padding: 1rem; text-align: left; font-size: 0.875rem; color: var(--text-main);">Username</th>
-                    <th style="padding: 1rem; text-align: left; font-size: 0.875rem; color: var(--text-main);">Role / Jabatan</th>
-                    <th style="padding: 1rem; text-align: right; font-size: 0.875rem; color: var(--text-main);">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($users as $u)
-                <tr style="border-bottom: 1px solid var(--border-color);">
-                    <td style="padding: 1rem; font-weight: 500;">
-                        {{ $u->name }}
-                        @if($u->id === auth()->id())
-                        <span style="background-color: #e0e7ff; color: #4338ca; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; margin-left: 0.5rem;">Anda</span>
-                        @endif
-                    </td>
-                    <td style="padding: 1rem; color: var(--text-muted);">{{ $u->username }}</td>
-                    <td style="padding: 1rem;">
-                        @if($u->role === 'admin')
-                            <span style="background-color: #fef3c7; color: #92400e; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Admin</span>
-                        @else
-                            <span style="background-color: #dbeafe; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Staff</span>
-                        @endif
-                    </td>
-                    <td style="padding: 1rem; text-align: right;">
-                        <button onclick="openEditModal({{ $u->id }}, '{{ $u->name }}', '{{ $u->username }}', '{{ $u->role }}')" class="btn" style="background-color: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.4rem 0.8rem; font-size: 0.875rem;">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-
-                        @if($u->role !== 'admin')
-                        <form action="{{ route('users.destroy', $u->id) }}" method="POST" style="display: inline-block; margin-left: 0.5rem;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun staff ini secara permanen?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn" style="background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 0.4rem 0.8rem; font-size: 0.875rem;">
-                                <i class="fas fa-trash"></i> Hapus
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nama Pengguna</th>
+                        <th>Email</th>
+                        <th>Role / Jabatan</th>
+                        <th style="text-align: right;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($users as $u)
+                    <tr>
+                        <td style="font-weight: 500;">
+                            {{ $u->name }}
+                            @if($u->id === auth()->id())
+                            <span style="background-color: #e0e7ff; color: #4338ca; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; margin-left: 0.5rem;">Anda</span>
+                            @endif
+                        </td>
+                        <td style="color: var(--text-muted);">{{ $u->email }}</td>
+                        <td>
+                            @if($u->role === 'admin')
+                                <span style="background-color: #fef3c7; color: #92400e; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Admin</span>
+                            @else
+                                <span style="background-color: #dbeafe; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Staff</span>
+                            @endif
+                        </td>
+                        <td style="text-align: right; white-space: nowrap;">
+                            <button onclick="openEditModal({{ $u->id }}, '{{ $u->name }}', '{{ $u->email }}', '{{ $u->role }}')" class="btn" style="background-color: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.4rem 0.8rem; font-size: 0.875rem;">
+                                <i class="fas fa-edit"></i> Edit
                             </button>
-                        </form>
-                        @endif
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+
+                            @if($u->role !== 'admin')
+                            <form action="{{ route('users.destroy', $u->id) }}" method="POST" style="display: inline-block; margin-left: 0.5rem;" onsubmit="event.preventDefault(); showConfirmModal('Apakah Anda yakin ingin menghapus akun staff ini? Tindakan ini tidak dapat dibatalkan.', () => this.submit());">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn" style="background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 0.4rem 0.8rem; font-size: 0.875rem;">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            </form>
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- MODAL CREATE -->
@@ -97,8 +99,8 @@
                     <input type="text" name="name" class="form-input" style="width: 100%;" required>
                 </div>
                 <div style="margin-bottom: 1rem;">
-                    <label class="form-label">Username <span style="color: #dc2626;">*</span></label>
-                    <input type="text" name="username" class="form-input" style="width: 100%;" required>
+                    <label class="form-label">Email <span style="color: #dc2626;">*</span></label>
+                    <input type="email" name="email" class="form-input" style="width: 100%;" required>
                 </div>
                 <div style="margin-bottom: 1rem;">
                     <label class="form-label">Password <span style="color: #dc2626;">*</span></label>
@@ -135,8 +137,8 @@
                     <input type="text" name="name" id="editName" class="form-input" style="width: 100%;" required>
                 </div>
                 <div style="margin-bottom: 1rem;">
-                    <label class="form-label">Username <span style="color: #dc2626;">*</span></label>
-                    <input type="text" name="username" id="editUsername" class="form-input" style="width: 100%;" required>
+                    <label class="form-label">Email <span style="color: #dc2626;">*</span></label>
+                    <input type="email" name="email" id="editEmail" class="form-input" style="width: 100%;" required>
                 </div>
                 <div style="margin-bottom: 1rem;">
                     <label class="form-label">Password <span style="color: var(--text-muted); font-size: 0.75rem; font-weight: 400;">(Kosongkan jika tidak diubah)</span></label>
@@ -159,10 +161,10 @@
 
     <script>
         const authId = {{ auth()->id() }};
-        function openEditModal(id, name, username, role) {
+        function openEditModal(id, name, email, role) {
             document.getElementById('editForm').action = '/users/' + id;
             document.getElementById('editName').value = name;
-            document.getElementById('editUsername').value = username;
+            document.getElementById('editEmail').value = email;
             
             const roleSelect = document.getElementById('editRole');
             roleSelect.value = role;
@@ -202,8 +204,8 @@
                 </div>
                 
                 <div style="margin-bottom: 1.5rem;">
-                    <label class="form-label">Username <span style="color: #dc2626;">*</span></label>
-                    <input type="text" name="username" value="{{ auth()->user()->username }}" class="form-input" style="width: 100%;" required>
+                    <label class="form-label">Email <span style="color: #dc2626;">*</span></label>
+                    <input type="email" name="email" value="{{ auth()->user()->email }}" class="form-input" style="width: 100%;" required>
                 </div>
                 
                 <div style="margin-bottom: 2rem;">

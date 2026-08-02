@@ -14,14 +14,14 @@ class UserSeeder extends Seeder
     {
         \App\Models\User::create([
             'name' => 'Admin Pemilik',
-            'username' => 'admin',
+            'email' => 'aganmagang@gmail.com',
             'role' => 'admin',
             'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
         ]);
 
         \App\Models\User::create([
             'name' => 'Staff Petugas',
-            'username' => 'staff',
+            'email' => 'staff@gmail.com',
             'role' => 'staff',
             'password' => \Illuminate\Support\Facades\Hash::make('staff123'),
         ]);

@@ -10,25 +10,24 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
-        $business = BusinessSetting::first();
-        return view('auth.login', compact('business'));
+        return view('auth.login');
     }
 
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'username' => ['required', 'string'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+            return redirect()->intended('dashboard')->with('success', 'Berhasil login! Selamat datang kembali, ' . Auth::user()->name . '.');
         }
 
         return back()->withErrors([
-            'username' => 'Username atau password salah.',
-        ])->onlyInput('username');
+            'email' => 'Email atau password salah.',
+        ])->onlyInput('email');
     }
 
     public function logout(Request $request)

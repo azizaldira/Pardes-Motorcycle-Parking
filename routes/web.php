@@ -19,6 +19,12 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
+
+    // Password Reset Routes
+    Route::get('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'showForgotForm'])->name('password.request');
+    Route::post('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'sendResetCode'])->name('password.email');
+    Route::get('/reset-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'showResetForm'])->name('password.reset.form');
+    Route::post('/reset-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'resetPassword'])->name('password.update');
 });
 
 Route::middleware('auth')->group(function () {
@@ -33,6 +39,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/kendaraan-keluar', [ExitController::class, 'index'])->name('kendaraan-keluar');
         Route::get('/kendaraan-keluar/{id}/proses', [ExitController::class, 'process'])->name('kendaraan-keluar.process');
         Route::post('/kendaraan-keluar/{id}/checkout', [ExitController::class, 'checkout'])->name('kendaraan-keluar.checkout');
+        
+        // Edit & Hapus (Fitur Petugas)
+        Route::put('/kendaraan/{id}', [EntryController::class, 'update'])->name('kendaraan.update');
+        Route::delete('/kendaraan/{id}', [EntryController::class, 'destroy'])->name('kendaraan.destroy');
     });
         Route::get('/users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
         Route::post('/users', [\App\Http\Controllers\UserController::class, 'store'])->name('users.store');
@@ -42,6 +52,7 @@ Route::middleware('auth')->group(function () {
 
     // Rute Khusus Admin
     Route::middleware('role:admin')->group(function () {
+
         Route::get('/pengaturan-tarif', [TariffController::class, 'index'])->name('pengaturan-tarif');
         Route::put('/pengaturan-tarif/update', [TariffController::class, 'update'])->name('pengaturan-tarif.update');
         

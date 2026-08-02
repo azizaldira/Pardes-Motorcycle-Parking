@@ -10,15 +10,23 @@ class BusinessSettingController extends Controller
 {
     public function index()
     {
-        $setting = BusinessSetting::first();
-        return view('settings.business', compact('setting'));
+        return view('settings.business');
     }
 
     public function update(Request $request)
     {
+        if ($request->has('business_name')) {
+            $request->merge(['business_name' => trim($request->business_name)]);
+        }
+
         $request->validate([
-            'business_name' => 'required|string|max:100',
-            'business_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'business_name' => 'required|string|min:3|max:18',
+            'business_logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ], [
+            'business_name.min' => 'Nama usaha minimal terdiri dari 3 karakter.',
+            'business_logo.mimes' => 'Format logo harus berupa JPG, JPEG, atau PNG.',
+            'business_logo.image' => 'File yang diunggah harus berupa gambar.',
+            'business_logo.max' => 'Ukuran logo maksimal 2 MB.',
         ]);
 
         $setting = BusinessSetting::first();

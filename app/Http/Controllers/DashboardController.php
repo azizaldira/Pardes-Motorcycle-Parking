@@ -11,8 +11,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $business = BusinessSetting::first();
-        
         $today = Carbon::today();
         
         $total_kendaraan_hari_ini = ParkingTransaction::whereDate('entry_time', $today)->count();
@@ -46,6 +44,6 @@ class DashboardController extends Controller
             'aktivitas_terbaru' => $aktivitas_terbaru
         ];
 
-        return view('dashboard.index', compact('business', 'data'));
+        return view('dashboard.index', compact('data'));
     }
 }
