@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         \App\Models\User::updateOrCreate(
-            ['email' => 'aganmagang@gmail.com'],
+            ['email' => 'admin@gmail.com'],
             [
                 'name' => 'Admin Pemilik',
                 'role' => 'admin',

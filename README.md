@@ -1,58 +1,126 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<h1 align="center">Penitipan Parde's — Motorcycle Parking Management System</h1>
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://img.shields.io/badge/PHP-8.3+-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.3+">
+  <img src="https://img.shields.io/badge/Laravel-13.8-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 13.8">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS 4.0">
+  <img src="https://img.shields.io/badge/Vite-8.0-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite 8.0">
+  <img src="https://img.shields.io/badge/Payment-Midtrans_Snap-002855?style=for-the-badge" alt="Midtrans Snap">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">
 </p>
 
-## About Laravel
+## About Penitipan Parde's
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Penitipan Parde's** is a web-based motorcycle parking management system developed as an undergraduate thesis (*Skripsi / Tugas Akhir*) project[cite: 1]. Built with **Laravel 13** and **Tailwind CSS 4** using the **Prototyping Software Development Life Cycle (SDLC)**, this application digitizes and automates daily motorcycle parking operations—replacing manual paper logs with real-time slot capacity monitoring[cite: 2], QR code ticketing[cite: 3, 4], digital payment gateway integration (Midtrans), and tamper-proof transaction records[cite: 4].
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Key Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Authentication & Role-Based Access Control (RBAC)
+- **Secure Login & Password Recovery:** Full authentication flow including verification code-based password reset (`/forgot-password` & `/reset-password`).
+- **Role Separation:** Distinct operational privileges for **Admin (Owner)** and **Staff (Parking Attendant)**.
 
-## Learning Laravel
+### Staff Operations (`role:staff`)
+- **Automated Vehicle Entry & PDF Ticketing:** Streamlined arrival logging with Indonesian license plate format validation[cite: 4], automatic tariff & slot consumption calculation[cite: 4], and instant PDF ticket generation embedded with a unique QR Code.
+- **Immutable Audit Trail:** Once recorded, entry timestamps and attendant identities are permanently locked to prevent data tampering[cite: 4].
+- **Multi-Method Exit & QR Code Scanner:**
+  - **Live Camera Scanner:** Browser-based camera scanning for instant ticket lookup at exit gates[cite: 3].
+  - **QR Image Upload:** Direct ticket QR image upload support[cite: 3].
+  - **Manual License Plate Search:** Fallback search for damaged or lost tickets[cite: 3].
+- **Digital & Cash Checkout:** Integrated with **Midtrans Snap** for cashless payments (with real-time webhook notification & manual status synchronization) alongside PDF receipt printing.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Admin Management (`role:admin`)
+- **Real-Time Capacity & Revenue Dashboard:** Live global slot occupancy monitor with visual threshold warnings ($\ge 80\%$ capacity alert)[cite: 2, 4], daily vehicle counts[cite: 2], active parked motorcycles[cite: 2], daily revenue[cite: 2], and lost ticket tracking[cite: 2].
+- **Tariff & Motorcycle Category Management:** Configure parking rates and manage motorcycle types with soft-disable toggles (preserving historical transaction integrity).
+- **Global Slot Capacity Settings:** Dynamically adjust total available parking slots.
+- **Financial & Operational Reports:** Comprehensive transaction reporting with one-click export to **PDF** and **Excel**.
+- **User & Business Profile Management:** Manage attendant accounts (activate/deactivate staff access) and customize business details and branding logos.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Development Methodology: Prototyping
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+This project was engineered using the **Prototyping Model**, ensuring continuous alignment between system behavior and real-world parking attendant workflows:
 
-## Agentic Development
+1. **Requirements Gathering:** Identifying operational bottlenecks in manual motorcycle parking facilities (slot overbooking, slow exit queues, and ticket fraud).
+2. **Quick Design & Prototyping:** Building a high-contrast, fast-response interface optimized for gate attendants.
+3. **User Evaluation & Refinement:** Iterative validation of QR scanning speed, capacity alert thresholds ($\ge 80\%$)[cite: 4], Midtrans webhook handling, and immutable entry logging[cite: 4].
+4. **System Implementation:** Full-stack deployment utilizing Laravel MVC architecture.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Tech Stack
 
-```bash
-composer require laravel/boost --dev
+| Layer | Technology |
+| :--- | :--- |
+| **Backend Framework** | PHP `^8.3`, Laravel `^13.8` |
+| **Frontend & Styling** | Blade Templates, Tailwind CSS `^4.0`, Vite `^8.0` |
+| **Database** | SQLite (Default) / MySQL |
+| **Payment Gateway** | Midtrans PHP SDK (`midtrans/midtrans-php ^2.6`) |
+| **PDF & QR Generation** | `barryvdh/laravel-dompdf ^3.1`, `simplesoftwareio/simple-qrcode ^4.2` |
 
-php artisan boost:install
-```
+## System Design & UML Diagrams
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Use Case Diagram
+![Use Case Diagram](sshot/uml-usecase.png)[cite: 5]
 
-## Contributing
+### Entity Relationship Diagram (ERD)
+![Entity Relationship Diagram](sshot/uml-erd.png)[cite: 5]
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Application Screenshots
 
-## Code of Conduct
+| Login Page | Real-Time Capacity Dashboard |
+| :---: | :---: |
+| ![Login Page](sshot/ss-login.png)[cite: 5] | ![Dashboard](sshot/ss-dashboard.png)[cite: 5] |
+| **Motorcycle Entry Form** | **QR Code Exit Scanner** |
+| ![Vehicle Entry](sshot/ss-entry.png)[cite: 5] | ![Exit Scanner](sshot/ss-exit-scan.png)[cite: 5] |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Tariff Management
+![Tariff Management](sshot/ss-tariff.png)[cite: 5]
 
-## Security Vulnerabilities
+## Installation & Local Setup
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Prerequisites
+- PHP `>= 8.3`
+- Composer
+- Node.js & NPM
+
+### Quick Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone [https://github.com/azizaldira/Pardes-Motorcycle-Parking.git](https://github.com/azizaldira/Pardes-Motorcycle-Parking.git)
+   cd Pardes-Motorcycle-Parking
+   ```
+
+2. **Run automated setup & seed default users**
+    ```bash
+    composer setup
+    php artisan db:seed
+    ```
+3. **Configure Midtrans in .env**
+    Open the generated .env file and fill in your Midtrans Sandbox/Production credentials:
+    ```bash
+    MIDTRANS_SERVER_KEY=your_midtrans_server_key
+    MIDTRANS_CLIENT_KEY=your_midtrans_client_key
+    MIDTRANS_IS_PRODUCTION=false
+    MIDTRANS_IS_SANITIZED=true
+    MIDTRANS_IS_3DS=true
+    ```
+    (If using MySQL instead of the default SQLite database, update DB_CONNECTION=mysql and your database credentials in .env, then re-run php artisan migrate --seed.)
+4. **Start the development environment**
+    Run the concurrent development server (Laravel server, queue listener, Pail logs, and Vite):
+    ```bash
+    composer dev
+    ```
+    Or run the standard server manually:
+    ```bash
+    php artisan serve
+    ```
+## Default Demo Credentials
+
+After running `php artisan db:seed`, you can log in using the following pre-configured accounts:
+
+| Role | Name | Email | Password |
+| :--- | :--- | :--- | :--- |
+| **Admin** | Admin Pemilik | ` admin@gmail.com` | `admin123` |
+| **Staff** | Staff Petugas | `staff@gmail.com` | `staff123` |
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project was created for academic purposes as part of an undergraduate thesis (Tugas Akhir) under the [MIT license](https://opensource.org/licenses/MIT).
